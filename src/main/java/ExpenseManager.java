@@ -7,7 +7,7 @@ public class ExpenseManager {
     public ExpenseManager() {
 
     }
-
+//...
     public void addExpense(Expense expense) {
         expenses.add(expense);
         expense.setId(nextId);

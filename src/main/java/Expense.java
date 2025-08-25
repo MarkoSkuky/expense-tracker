@@ -5,6 +5,7 @@ public class Expense {
     private Category category;
     private LocalDate date;
     private String note;
+    private int id;
 
     public Expense(String note, Double amount, Category category, LocalDate date) {
         this.amount = amount;
@@ -43,5 +44,13 @@ public class Expense {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }

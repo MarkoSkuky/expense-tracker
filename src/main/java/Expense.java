@@ -1,13 +1,16 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 public class Expense {
     private double amount;
     private Category category;
     private LocalDate date;
     private String note;
-    private int id;
+    private String id;
 
     public Expense(String note, Double amount, Category category, LocalDate date) {
+        this.id = UUID.randomUUID().toString();
         this.amount = amount;
         this.category = category;
         this.date = date;
@@ -46,11 +49,18 @@ public class Expense {
         this.note = note;
     }
 
-    public void setId(int id) {
+    public String getId() {
+        return id;
+    }
+
+    // už nepotrebuješ setId() pri UUID, ale môžeš ho nechať, ak budeš načítavať zo súboru
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
-        return this.id;
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return note + " (" + category + "): " + amount + "€ " + date.format(formatter) + "\n";
     }
 }

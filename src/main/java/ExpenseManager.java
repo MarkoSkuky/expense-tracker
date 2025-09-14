@@ -12,21 +12,41 @@ public class ExpenseManager {
     public ExpenseManager() {
 
     }
-//...
+
+    /// ADD/REMOVE METHODS
     public void addExpense(Expense expense) {
         expenses.add(expense);
+        DatabaseManager.insertExpense(expense);
     }
     public void removeExpense(Expense expense) {
         expenses.remove(expense);
+        DatabaseManager.removeFromDB(expense);
     }
-    public void removeExpenseById(String id) {
-        for (int i = 0; i < expenses.size(); i++) {
-            if (expenses.get(i).getId().equals(id)) {
-                expenses.remove(i);
-                return;
-            }
-        }
-        System.out.println("Expense with this id does not exist.");
+
+    /// UPDATE METHODS
+    public void updateAmount(Expense e, double newAmount) {
+        e.setAmount(newAmount);
+        DatabaseManager.updateExpense(e);
+    }
+
+    public void updateCategory(Expense e, Category newCategory) {
+        e.setCategory(newCategory);
+        DatabaseManager.updateExpense(e);
+    }
+
+    public void updateDate(Expense e, LocalDate newDate) {
+        e.setDate(newDate);
+        DatabaseManager.updateExpense(e);
+    }
+
+    public void updateNote(Expense e, String newNote) {
+        e.setNote(newNote);
+        DatabaseManager.updateExpense(e);
+    }
+
+    public void updateId(Expense e, String newId) {
+        e.setId(newId);
+        DatabaseManager.updateExpense(e);
     }
 
     public ArrayList<Expense> getAllExpenses() {

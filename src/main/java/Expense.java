@@ -53,7 +53,6 @@ public class Expense {
         return id;
     }
 
-    // už nepotrebuješ setId() pri UUID, ale môžeš ho nechať, ak budeš načítavať zo súboru
     public void setId(String id) {
         this.id = id;
     }

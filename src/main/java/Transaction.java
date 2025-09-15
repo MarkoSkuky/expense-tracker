@@ -2,19 +2,21 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class Expense {
+public class Transaction {
     private double amount;
     private Category category;
     private LocalDate date;
     private String note;
     private String id;
+    private TransactionType type;
 
-    public Expense(String note, Double amount, Category category, LocalDate date) {
+    public Transaction(TransactionType type, String note, Double amount, Category category, LocalDate date) {
         this.id = UUID.randomUUID().toString();
         this.amount = amount;
         this.category = category;
         this.date = date;
         this.note = note;
+        this.type = type;
     }
 
     public double getAmount() {
@@ -57,9 +59,17 @@ public class Expense {
         this.id = id;
     }
 
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return note + " (" + category + "): " + amount + "€ " + date.format(formatter) + "\n";
+        return type + " " + note + " (" + category + "): " + amount + "€ " + date.format(formatter) + "\n";
     }
 }

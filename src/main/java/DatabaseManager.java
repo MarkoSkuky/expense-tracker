@@ -1,6 +1,5 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 
-    private static final String URL = "jdbc:sqlite:expenses.db";
+    private static final String URL = "jdbc:sqlite:transactions.db";
 
     // pripojenie k databáze
     public static Connection connect() throws SQLException {
@@ -18,8 +17,9 @@ public class DatabaseManager {
 
     // vytvorenie tabuľky
     public static void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS expenses (" +
+        String sql = "CREATE TABLE IF NOT EXISTS transactions (" +
                 "id TEXT PRIMARY KEY," +
+                "type TEXT," +
                 "note TEXT," +
                 "amount REAL," +
                 "category TEXT," +
@@ -36,9 +36,10 @@ public class DatabaseManager {
     }
 
     // vloženie výdavku
-    public static void insertExpense(Expense e) {
-        String sql = "INSERT INTO expenses(id, note, amount, category, date) VALUES(" +
+    public static void insertTransaction(Transaction e) {
+        String sql = "INSERT INTO transactions(id, type, note, amount, category, date) VALUES(" +
                 "'" + e.getId() + "', " +
+                "'" + e.getType().toString() + "', " +
                 "'" + e.getNote() + "', " +
                 e.getAmount() + ", " +
                 "'" + e.getCategory().toString() + "', " +
@@ -49,17 +50,17 @@ public class DatabaseManager {
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate(sql);
-            System.out.println("Expense inserted: " + e.getNote());
+            System.out.println("Transaction inserted: " + e.getNote());
 
         } catch (SQLException ex) {
-            System.out.println("Error inserting expense: " + ex.getMessage());
+            System.out.println("Error inserting Transaction: " + ex.getMessage());
         }
     }
 
     // načítanie všetkých výdavkov
-    public static ArrayList<Expense> getAllExpensesFromDB() {
-        ArrayList<Expense> expenses = new ArrayList<>();
-        String sql = "SELECT * FROM expenses";
+    public static ArrayList<Transaction> getAllTransactionsFromDB() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+        String sql = "SELECT * FROM transactions";
 
         try (Connection conn = connect();
              Statement stmt = conn.createStatement();
@@ -68,42 +69,43 @@ public class DatabaseManager {
             while (rs.next()) {
                 String id = rs.getString("id");
                 String note = rs.getString("note");
+                TransactionType type = TransactionType.valueOf(rs.getString("type"));
                 double amount = rs.getDouble("amount");
                 Category category = Category.valueOf(rs.getString("category"));
                 LocalDate date = LocalDate.parse(rs.getString("date"));
 
-                Expense e = new Expense(note, amount, category, date);
+                Transaction e = new Transaction(type, note, amount, category, date);
                 e.setId(id);
-                expenses.add(e);
+                transactions.add(e);
             }
 
         } catch (SQLException ex) {
-            System.out.println("Error reading expenses: " + ex.getMessage());
+            System.out.println("Error reading transactions: " + ex.getMessage());
         }
 
-        return expenses;
+        return transactions;
     }
 
-    public static void removeFromDB(Expense e) {
-        String sql = "DELETE FROM expenses WHERE id='" + e.getId() + "';";
+    public static void removeFromDB(Transaction e) {
+        String sql = "DELETE FROM transactions WHERE id='" + e.getId() + "';";
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
 
             int affectedRows = stmt.executeUpdate(sql); //toto je len na kontrolovanie ci naozaj sa odstranilo nieco z DB
 
             if (affectedRows > 0) {
-                System.out.println("Expense deleted: " + e.getNote());
+                System.out.println("transaction deleted: " + e.getNote());
             } else {
-                System.out.println("No expense found with id: " + e.getId());
+                System.out.println("No transaction found with id: " + e.getId());
             }
 
         } catch (SQLException ex) {
-            System.out.println("Error deleting expense: " + ex.getMessage());
+            System.out.println("Error deleting transaction: " + ex.getMessage());
         }
     }
 
-    public static void updateExpense(Expense e) {
-        String sql = "UPDATE expenses SET " +
+    public static void updateTransaction(Transaction e) {
+        String sql = "UPDATE transactions SET " +
                 "note = '" + e.getNote() + "', " +
                 "amount = " + e.getAmount() + ", " +
                 "category = '" + e.getCategory().toString() + "', " +
@@ -116,13 +118,13 @@ public class DatabaseManager {
             int affectedRows = stmt.executeUpdate(sql);
 
             if (affectedRows > 0) {
-                System.out.println("Expense updated: " + e.getNote());
+                System.out.println("Transaction updated: " + e.getNote());
             } else {
-                System.out.println("No expense found with id: " + e.getId());
+                System.out.println("No transaction found with id: " + e.getId());
             }
 
         } catch (SQLException ex) {
-            System.out.println("Error updating expense: " + ex.getMessage());
+            System.out.println("Error updating transaction: " + ex.getMessage());
         }
     }
 }

@@ -6,5 +6,10 @@ public enum Category {
     HEALTH,
     EDUCATION,
     SHOPPING,
-    BILLS
+    BILLS,
+    SALARY,
+    GIFT,
+    INVESTMENT,
+    GAMBLE,
+    OTHER
 }
